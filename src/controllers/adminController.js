@@ -1211,98 +1211,6 @@ export const allUsersPrantPracharak = async (req, res) => {
         sanghatan: obj.sanghatan_id?.name || "",
         dayitva: obj.dayitva_id?.name || "",
         kshetra: obj.kshetra_id?.name || "",
-Indent mode
-
-Spaces
-Indent size
-
-2
-Line wrap mode
-
-No wrap
-Editing adminController.js file contents
-Selection deleted
-1178
-1179
-1180
-1181
-1182
-1183
-1184
-1185
-1186
-1187
-1188
-1189
-1190
-1191
-1192
-1193
-1194
-1195
-1196
-1197
-1198
-1199
-1200
-1201
-1202
-1203
-1204
-1205
-1206
-1207
-1208
-1209
-1210
-1211
-1212
-1213
-1214
-1215
-1216
-1217
-1218
-1219
-1220
-1221
-1222
-1223
-1224
-1225
-1226
-1227
-1228
-1229
-1230
-1231
-1232
-1233
-1234
-1235
-1236
-1237
-1238
-1239
-1240
-1241
-1242
-1243
-1244
-1245
-1246
-1247
-1248
-1249
-1250
-1251
-1252
-1253
-1254
-1255
-1256
-1257
-
         prant: obj.prant_id?.name || "",
         kendra: obj.kendra,
         mobile_no_1: obj.mobile_no_1,
@@ -1466,6 +1374,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       SahakshetraPracharakDayitva,
       kshetraPracharakPramukhDayitva,
       prantPracharakDayitva,
+<<<<<<< HEAD
       prantPracharakSaha,
       kshetraKaryavahDayitva,
       SahakshetraKaryavahDayitva,
@@ -1475,11 +1384,18 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       sahaprantKaryavahDayitva,
       prantSanghachalakDayitva,
       SahaprantSanghachalakDayitva,
+=======
+      kshetraKaryavahDayitva,
+      kshetraSanchalakDayitva,
+      prantKaryavahDayitva,
+      prantSanghachalakDayitva,
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     ] = await Promise.all([
       Dayitva.findOne({ name: "क्षेत्र प्रचारक" }),
       Dayitva.findOne({ name: "सह क्षेत्र प्रचारक" }),
       Dayitva.findOne({ name: "क्षेत्र प्रचारक प्रमुख" }),
       Dayitva.findOne({ name: "प्रांत प्रचारक" }),
+<<<<<<< HEAD
       Dayitva.findOne({ name: "सह प्रांत प्रचारक" }),
       Dayitva.findOne({ name: "क्षेत्र कार्यवाह" }),
       Dayitva.findOne({ name: "सह क्षेत्र कार्यवाह" }),
@@ -1489,6 +1405,12 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       Dayitva.findOne({ name: "सह प्रांत कार्यवाह" }),
       Dayitva.findOne({ name: "मा. प्रांत संघचालक" }),
       Dayitva.findOne({ name: "मा. सह प्रांत संघचालक" }),
+=======
+      Dayitva.findOne({ name: "क्षेत्र कार्यवाह" }),
+      Dayitva.findOne({ name: "क्षेत्र संघचालक" }),
+      Dayitva.findOne({ name: "प्रांत कार्यवाह" }),
+      Dayitva.findOne({ name: "प्रांत संघचालक" }),
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     ]);
 
     const vividhPrakar = await Prakar.findOne({ name: "विविध क्षेत्र" });
@@ -1531,7 +1453,11 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
 
+<<<<<<< HEAD
     const kshetrakaryavahTotal =
+=======
+    const kshetrakaryavah =
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
       kshetraStar && kshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
             year: parsedYear,
@@ -1539,6 +1465,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
             dayitva_id: kshetraKaryavahDayitva._id,
           })
         : 0;
+<<<<<<< HEAD
     const SahakshetraKaryavahDayitvaTotal =
       kshetraStar && SahakshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
@@ -1550,6 +1477,10 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
 
        const kshetrakaryavah =kshetrakaryavahTotal+SahakshetraKaryavahDayitvaTotal
     const kshtrasanchalka =
+=======
+
+    const kshtrasanchalkaTotal =
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
       kshetraStar && kshetraSanchalakDayitva
         ? await AbkmUser.countDocuments({
             year: parsedYear,
@@ -1557,6 +1488,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
             dayitva_id: kshetraSanchalakDayitva._id,
           })
         : 0;
+<<<<<<< HEAD
     const SahakshtrasanchalkaTotal =
       kshetraStar && SahakshetraSanchalakDayitva
         ? await AbkmUser.countDocuments({
@@ -1567,6 +1499,9 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
         : 0;
 
         const kshtrasanchalkaTotal=kshtrasanchalka +SahakshtrasanchalkaTotal
+=======
+
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     const prantkaryavah =
       prantStar && prantKaryavahDayitva
         ? await AbkmUser.countDocuments({
@@ -1575,6 +1510,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
             dayitva_id: prantKaryavahDayitva._id,
           })
         : 0;
+<<<<<<< HEAD
     const SahaprantKaryavahDayitva =
       prantStar && sahaprantKaryavahDayitva
         ? await AbkmUser.countDocuments({
@@ -1584,6 +1520,9 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
      const prantkaryavahTotal = prantkaryavah+SahaprantKaryavahDayitva
+=======
+
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     const prantsanghachalak =
       prantStar && prantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
@@ -1592,6 +1531,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
             dayitva_id: prantSanghachalakDayitva._id,
           })
         : 0;
+<<<<<<< HEAD
     const Sahaprantsanghachalak =
       prantStar && SahaprantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
@@ -1602,6 +1542,9 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
         : 0;
 
           const prantsanghachalakTotal = prantsanghachalak+Sahaprantsanghachalak
+=======
+
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     const prantPracharakTotal =
       prantStar  && prantPracharakSaha && prantPracharakDayitva
         ? await AbkmUser.countDocuments({
@@ -1647,7 +1590,10 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       ],
     });
 
+<<<<<<< HEAD
     const prantPracharak_total = prantPracharakTotal +prantPracharaksahaTotal
+=======
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
     // --- Final Response ---
     return res.status(200).json({
       totalUsers,
@@ -1656,9 +1602,15 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       kshtrasanchalkaTotal,
       kshetraPracharakTotal,
       kshetraPracharakPramukhTotal,
+<<<<<<< HEAD
       prantkaryavahTotal,
       prantsanghachalakTotal,
       prantPracharak_total,
+=======
+      prantkaryavah,
+      prantsanghachalak,
+      prantPracharakTotal,
+>>>>>>> 60454f95bb6644402f95ed8254eb45e42c6eac33
       vividhKshetraTotal,
       baithakShahsankhya,
       baithakShahSuchi,
@@ -1671,6 +1623,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
     });
   }
 };
+
 
 export const allAbkmUsers = async (req, res) => {
   try {
