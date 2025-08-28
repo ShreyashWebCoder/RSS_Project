@@ -8,7 +8,13 @@ const app = express();
 // Define CORS options for production
 
 // Use the cors middleware with your defined options
-app.use(cors());
+app.use(cors(
+    {
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+
+    }
+));
 
 app.use(express.json());
 app.use("/api/auth", authRouter);
