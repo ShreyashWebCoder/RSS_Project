@@ -10,7 +10,7 @@ const app = express();
 // Use the cors middleware with your defined options
 app.use(cors(
     {
-        origin: "*",
+        origin: "https://suchi-project.netlify.app/",
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 
     }
