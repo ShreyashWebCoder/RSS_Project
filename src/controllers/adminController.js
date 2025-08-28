@@ -1350,7 +1350,6 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
   try {
     const { year } = req.params;
 
-    // Validate 'year' parameter
     if (!year) {
       return res.status(400).json({ message: "Year parameter is required" });
     }
@@ -1362,8 +1361,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
         .json({ message: "Invalid year format, must be a number" });
     }
 
-    const totalUsers = await AbkmUser.countDocuments({ year: parsedYear });
-    // --- Common data lookups ---
+    // --- Common Data Lookups ---
     const [abhaStar, kshetraStar, prantStar, vividhStar] = await Promise.all([
       Star.findOne({ name: "अ. भा." }),
       Star.findOne({ name: "क्षेत्र" }),
@@ -1371,98 +1369,110 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       Star.findOne({ name: "विविध क्षेत्र" }),
     ]);
 
-    // const abhaStar = await Star.findOne({ name: 'अ. भा.' });
-    console.log("abhaStar", abhaStar);
     const [
       kshetraPracharakDayitva,
       kshetraPracharakPramukhDayitva,
       prantPracharakDayitva,
+      kshetraKaryavahDayitva,
+      kshetraSanchalakDayitva,
+      prantKaryavahDayitva,
+      prantSanghachalakDayitva,
     ] = await Promise.all([
       Dayitva.findOne({ name: "क्षेत्र प्रचारक" }),
       Dayitva.findOne({ name: "क्षेत्र प्रचारक प्रमुख" }),
       Dayitva.findOne({ name: "प्रांत प्रचारक" }),
+      Dayitva.findOne({ name: "क्षेत्र कार्यवाह" }),
+      Dayitva.findOne({ name: "क्षेत्र संघचालक" }),
+      Dayitva.findOne({ name: "प्रांत कार्यवाह" }),
+      Dayitva.findOne({ name: "प्रांत संघचालक" }),
     ]);
 
     const vividhPrakar = await Prakar.findOne({ name: "विविध क्षेत्र" });
 
-    // --- User counts ---
+    // --- Total Users ---
+    const totalUsers = await AbkmUser.countDocuments({ year: parsedYear });
 
+    // --- User Counts ---
     const a_b_adhikariTotal = abhaStar
       ? await AbkmUser.countDocuments({
-        year: parsedYear,
-        star_id: abhaStar._id,
-      })
+          year: parsedYear,
+          star_id: abhaStar._id,
+        })
       : 0;
 
     const kshetraPracharakTotal =
       kshetraStar && kshetraPracharakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraPracharakDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraPracharakDayitva._id,
+          })
         : 0;
 
     const kshetraPracharakPramukhTotal =
       kshetraStar && kshetraPracharakPramukhDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraPracharakPramukhDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraPracharakPramukhDayitva._id,
+          })
         : 0;
 
     const kshetrakaryavah =
-      kshetraStar
+      kshetraStar && kshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraKaryavahDayitva._id,
+          })
+        : 0;
+
+    const kshtrasanchalkaTotal =
+      kshetraStar && kshetraSanchalakDayitva
+        ? await AbkmUser.countDocuments({
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraSanchalakDayitva._id,
+          })
         : 0;
 
     const prantkaryavah =
-      prantStar
+      prantStar && prantKaryavahDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantKaryavahDayitva._id,
+          })
         : 0;
 
     const prantsanghachalak =
-      prantStar
+      prantStar && prantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantSanghachalakDayitva._id,
+          })
         : 0;
+
     const prantPracharakTotal =
       prantStar && prantPracharakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: prantPracharakDayitva._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantPracharakDayitva._id,
+          })
         : 0;
-
-    const kshtrasanchalkaTotal = kshetraStar
-      ? await AbkmUser.countDocuments({
-
-        year: parsedYear,
-        star_id: kshetraStar._id,
-      })
-      : 0;
 
     const vividhKshetraTotal =
       vividhStar && vividhPrakar
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: vividhStar._id,
-          prakar_id: vividhPrakar._id,
-        })
+            year: parsedYear,
+            star_id: vividhStar._id,
+            prakar_id: vividhPrakar._id,
+          })
         : 0;
 
-
-    // --- Baithak counts ---
+    // --- Baithak Counts ---
     const baithakShahsankhya = await AbkmUser.countDocuments({
       year: parsedYear,
       karyakari_mandal_baithak: true,
@@ -1481,30 +1491,16 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       ],
     });
 
-    console.log(
-      totalUsers,
-      a_b_adhikariTotal,
-      kshetraPracharakTotal,
-      kshetraPracharakPramukhTotal,
-      baithakShahsankhya,
-      kshetrakaryavah,
-      prantkaryavah,
-      baithakShahSuchi,
-      prantsanghachalak,
-      prantPracharakTotal,
-      kshtrasanchalkaTotal
-    );
-
-    // --- Final response ---
+    // --- Final Response ---
     return res.status(200).json({
       totalUsers,
       a_b_adhikariTotal,
-      kshtrasanchalkaTotal,
       kshetrakaryavah,
+      kshtrasanchalkaTotal,
       kshetraPracharakTotal,
       kshetraPracharakPramukhTotal,
-      prantsanghachalak,
       prantkaryavah,
+      prantsanghachalak,
       prantPracharakTotal,
       vividhKshetraTotal,
       baithakShahsankhya,
