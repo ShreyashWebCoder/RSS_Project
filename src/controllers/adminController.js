@@ -254,6 +254,7 @@ export const uploadUsers = async (req, res) => {
             }
           }
 
+          
           if (errors.length > 0) {
             return res.status(400).json({
               message: "Validation errors in CSV file",
