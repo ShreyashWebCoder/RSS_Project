@@ -144,6 +144,7 @@ export const uploadUsers = async (req, res) => {
       return res.status(400).json({ error: "Invalid upload type" });
     }
 
+    
     const expectedHeaders = [...requiredFields, ...booleanFields];
     const results = [];
     const errors = [];
@@ -254,7 +255,7 @@ export const uploadUsers = async (req, res) => {
             }
           }
 
-          
+
           if (errors.length > 0) {
             return res.status(400).json({
               message: "Validation errors in CSV file",
