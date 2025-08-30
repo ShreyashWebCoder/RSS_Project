@@ -178,6 +178,7 @@ export const uploadUsers = async (req, res) => {
           if (missing.length > 0 || extra.length > 5) {
             responseSent = true;
             stream.destroy();
+            
             return res.status(400).json({
               message:
                 "Meeting type mismatch. Uploaded CSV does not match selected meeting format.",
@@ -229,6 +230,7 @@ export const uploadUsers = async (req, res) => {
             ].forEach((ref) => {
               if (ref.error) errorObj.issues.push(ref.error);
             });
+
 
             const attendanceErr = validateEnumField(
               row.attendance,
@@ -301,23 +303,33 @@ export const uploadUsers = async (req, res) => {
               doc[field] = row[field]?.toString().trim() === "1";
             }
 
-            const duplicate = await Model.findOne({
-              $or: [
-                { mobile_no_1: doc.mobile_no_1 },
-                { email: doc.email },
-                { name: doc.name },
-              ],
-            });
+            // const duplicate = await Model.findOne(
+            //   //   {
+            //   //   $or: [
+            //   //     { mobile_no_1: doc.mobile_no_1 },
+            //   //     { email: doc.email },
+            //   //     // { name: doc.name },
+            //   //   ],
+            //   // }
+            //   {
+            //     $or: [
+            //       { mobile_no_1: doc.mobile_no_1 },
+            //       { email: doc.email },
+            //     ],
+            //   },
+            //   { $set: doc },
+            //   { upsert: true, new: true }
+            // );
 
-            if (duplicate) {
-              errors.push({
-                row: rowNumber,
-                issues: [
-                  `User already exists with mobile: ${doc.mobile_no_1}, email: ${doc.email}`,
-                ],
-              });
-              continue;
-            }
+            // if (duplicate) {
+            //   errors.push({
+            //     row: rowNumber,
+            //     issues: [
+            //       `User already exists with mobile: ${doc.mobile_no_1}, email: ${doc.email}`,
+            //     ],
+            //   });
+            //   continue;
+            // }
 
             await new Model(doc).save();
           }
@@ -828,12 +840,12 @@ export const getParticularSanghatanname = async (req, res) => {
 
 export const getAllDropdowns = async (req, res) => {
   try {
-    const stars = await Star.find().select("name");
-    const prakars = await Prakar.find().select("name");
-    const sanghatans = await Sanghatan.find().select("name");
-    const dayitvas = await Dayitva.find().select("name");
-    const kshetras = await Kshetra.find().select("name");
-    const prants = await Prant.find().select("name");
+    const stars = await Star.find().select("name active kshetra_id"); // Remove { active: true }
+    const prakars = await Prakar.find().select("name active");
+    const sanghatans = await Sanghatan.find().select("name active");
+    const dayitvas = await Dayitva.find().select("name active");
+    const kshetras = await Kshetra.find().select("name active");
+    const prants = await Prant.find().select("name active kshetra_id");
 
     res.status(200).json({
       stars,
@@ -1407,133 +1419,133 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
     // --- User Counts ---
     const a_b_adhikariTotal = abhaStar
       ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: abhaStar._id,
-        })
+        year: parsedYear,
+        star_id: abhaStar._id,
+      })
       : 0;
 
     const kshetraPracharak =
       kshetraStar && kshetraPracharakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: kshetraPracharakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: kshetraPracharakDayitva._id,
+        })
         : 0;
     const SahakshetraPracharakTotal =
       kshetraStar && SahakshetraPracharakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: SahakshetraPracharakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: SahakshetraPracharakDayitva._id,
+        })
         : 0;
 
-    const kshetraPracharakTotal = kshetraPracharak+SahakshetraPracharakTotal
+    const kshetraPracharakTotal = kshetraPracharak + SahakshetraPracharakTotal
     const kshetraPracharakPramukhTotal =
       kshetraStar && kshetraPracharakPramukhDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: kshetraPracharakPramukhDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: kshetraPracharakPramukhDayitva._id,
+        })
         : 0;
 
     const kshetrakaryavahTotal =
       kshetraStar && kshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: kshetraKaryavahDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: kshetraKaryavahDayitva._id,
+        })
         : 0;
     const SahakshetraKaryavahDayitvaTotal =
       kshetraStar && SahakshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: SahakshetraKaryavahDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: SahakshetraKaryavahDayitva._id,
+        })
         : 0;
 
-       const kshetrakaryavah =kshetrakaryavahTotal+SahakshetraKaryavahDayitvaTotal
+    const kshetrakaryavah = kshetrakaryavahTotal + SahakshetraKaryavahDayitvaTotal
     const kshtrasanchalka =
       kshetraStar && kshetraSanchalakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: kshetraSanchalakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: kshetraSanchalakDayitva._id,
+        })
         : 0;
     const SahakshtrasanchalkaTotal =
       kshetraStar && SahakshetraSanchalakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: kshetraStar._id,
-            dayitva_id: SahakshetraSanchalakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: kshetraStar._id,
+          dayitva_id: SahakshetraSanchalakDayitva._id,
+        })
         : 0;
 
-        const kshtrasanchalkaTotal=kshtrasanchalka +SahakshtrasanchalkaTotal
+    const kshtrasanchalkaTotal = kshtrasanchalka + SahakshtrasanchalkaTotal
     const prantkaryavah =
       prantStar && prantKaryavahDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: prantKaryavahDayitva._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: prantKaryavahDayitva._id,
+        })
         : 0;
     const SahaprantKaryavahDayitva =
       prantStar && sahaprantKaryavahDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: sahaprantKaryavahDayitva._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: sahaprantKaryavahDayitva._id,
+        })
         : 0;
-     const prantkaryavahTotal = prantkaryavah+SahaprantKaryavahDayitva
+    const prantkaryavahTotal = prantkaryavah + SahaprantKaryavahDayitva
     const prantsanghachalak =
       prantStar && prantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: prantSanghachalakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: prantSanghachalakDayitva._id,
+        })
         : 0;
     const Sahaprantsanghachalak =
       prantStar && SahaprantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: SahaprantSanghachalakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: SahaprantSanghachalakDayitva._id,
+        })
         : 0;
 
-          const prantsanghachalakTotal = prantsanghachalak+Sahaprantsanghachalak
+    const prantsanghachalakTotal = prantsanghachalak + Sahaprantsanghachalak
     const prantPracharakTotal =
-      prantStar  && prantPracharakSaha && prantPracharakDayitva
+      prantStar && prantPracharakSaha && prantPracharakDayitva
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: prantPracharakDayitva._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: prantPracharakDayitva._id,
+        })
         : 0;
     const prantPracharaksahaTotal =
-      prantStar  && prantPracharakSaha
+      prantStar && prantPracharakSaha
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: prantStar._id,
-            dayitva_id: prantPracharakSaha._id,
-          })
+          year: parsedYear,
+          star_id: prantStar._id,
+          dayitva_id: prantPracharakSaha._id,
+        })
         : 0;
 
     const vividhKshetraTotal =
       vividhStar && vividhPrakar
         ? await AbkmUser.countDocuments({
-            year: parsedYear,
-            star_id: vividhStar._id,
-            prakar_id: vividhPrakar._id,
-          })
+          year: parsedYear,
+          star_id: vividhStar._id,
+          prakar_id: vividhPrakar._id,
+        })
         : 0;
 
     // --- Baithak Counts ---
@@ -1555,7 +1567,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       ],
     });
 
-    const prantPracharak_total = prantPracharakTotal +prantPracharaksahaTotal
+    const prantPracharak_total = prantPracharakTotal + prantPracharaksahaTotal
     // --- Final Response ---
     return res.status(200).json({
       totalUsers,
@@ -1579,6 +1591,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
     });
   }
 };
+
 
 export const allAbkmUsers = async (req, res) => {
   try {
@@ -1690,16 +1703,6 @@ export const addOrUpdateAbkmUser = async (req, res) => {
       !email ||
       !gender
     ) {
-      console.log("name", name);
-      console.log("star_id", star_id);
-      console.log("prakar_id", prakar_id);
-      console.log("sanghatan_id", sanghatan_id);
-      console.log("dayitva_id", dayitva_id);
-      console.log("kshetra_id", kshetra_id);
-      console.log("prant_id", prant_id);
-      console.log("kendra", kendra);
-      console.log("email", email);
-      console.log("gender", gender);
 
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -1935,5 +1938,106 @@ export const createSubmitData = async (req, res) => {
     res.status(201).json(submitted);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+// Newly 
+export const updateDropdownItem = async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    const { name, active, kshetra_id } = req.body;
+
+    // Validate required fields
+    if (!type || !id || !name) {
+      return res.status(400).json({ message: "Type, ID, and name are required" });
+    }
+
+    // Validate ID format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+
+    // Determine the Mongoose model based on type
+    let Model;
+    switch (type) {
+      case "stars":
+        Model = Star;
+        break;
+      case "prakars":
+        Model = Prakar;
+        break;
+      case "sanghatans":
+        Model = Sanghatan;
+        break;
+      case "dayitvas":
+        Model = Dayitva;
+        break;
+      case "kshetras":
+        Model = Kshetra;
+        break;
+      case "prants":
+        Model = Prant;
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid type" });
+    }
+
+    // Check if item exists
+    const existingItem = await Model.findById(id);
+    if (!existingItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    // Check for duplicate name (excluding current item)
+    const duplicate = await Model.findOne({
+      name: name.trim(),
+      _id: { $ne: id },
+    });
+    if (duplicate) {
+      return res.status(400).json({ message: "Name already exists" });
+    }
+
+    // Prepare update data
+    const updateData = {
+      name: name.trim(),
+      active: active !== undefined ? active : existingItem.active, // Preserve existing active if not provided
+    };
+
+    // Handle kshetra_id for 'prants' type
+    if (type === "prants") {
+      if (kshetra_id) {
+        if (!mongoose.Types.ObjectId.isValid(kshetra_id)) {
+          return res.status(400).json({ message: "Invalid kshetra_id format" });
+        }
+        const kshetraExists = await Kshetra.findById(kshetra_id);
+        if (!kshetraExists) {
+          return res.status(400).json({ message: "Kshetra not found" });
+        }
+        updateData.kshetra_id = kshetra_id;
+      } else if (!existingItem.kshetra_id) {
+        return res.status(400).json({ message: "kshetra_id is required for prants" });
+      } else {
+        // Keep existing kshetra_id if not provided and it exists
+        updateData.kshetra_id = existingItem.kshetra_id;
+      }
+    }
+
+    // Update the item with validation
+    const updatedItem = await Model.findByIdAndUpdate(
+      id,
+      { $set: updateData }, // Use $set to update only specified fields
+      { new: true, runValidators: true, lean: true } // lean: true for better performance
+    );
+
+    res.status(200).json({
+      message: "Updated successfully",
+      data: updatedItem,
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
   }
 };

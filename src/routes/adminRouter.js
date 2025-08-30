@@ -16,7 +16,8 @@ import {
   addOrUpdateUser,
   updateDropdownStatus,
   getParticularPrantname,
-  getParticularSanghatanname, sendMail, createAdminSetting, getAdminSettings, updateAdminSetting, deleteAdminSetting, createSubmitData, getSubmitData
+  getParticularSanghatanname, sendMail, createAdminSetting, getAdminSettings, updateAdminSetting, deleteAdminSetting, createSubmitData, getSubmitData,
+  updateDropdownItem
 } from "../controllers/adminController.js";
 import { authenticate } from "../middlewares/auth.js";
 import multer from "multer";
@@ -50,7 +51,9 @@ router.get("/sanghatan/:id", authenticate, getParticularSanghatanname);
 router.get("/all-dropdowns", authenticate, getAllDropdowns);
 router.post("/add-pratinidhi-user", authenticate, addOrUpdatePratinidhiUser);
 router.post("/add_dropdown/:type", authenticate, addOrUpdateUser);
-router.put("/update-status/:type/:id", authenticate, updateDropdownStatus);
+
+router.put("/update-status/:type/:id", authenticate, updateDropdownItem);
+
 router.post("/send-form", authenticate, sendMail)
 router.get("/setting", authenticate, getAdminSettings); // GET all
 router.post("/setting", authenticate, createAdminSetting); // POST new
@@ -87,5 +90,5 @@ router.get(
 router.get("/all-abkm-users/:year", authenticate, allAbkmUsers);
 // Route for adding or updating an ABKM user
 router.post("/add-abkm-user", authenticate, addOrUpdateAbkmUser);
-
+router.put("/update_dropdown/:type/:id", authenticate, updateDropdownItem);
 export default router;
