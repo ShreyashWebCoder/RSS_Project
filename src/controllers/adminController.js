@@ -178,7 +178,6 @@ export const uploadUsers = async (req, res) => {
           if (missing.length > 0 || extra.length > 5) {
             responseSent = true;
             stream.destroy();
-            
             return res.status(400).json({
               message:
                 "Meeting type mismatch. Uploaded CSV does not match selected meeting format.",
@@ -230,7 +229,6 @@ export const uploadUsers = async (req, res) => {
             ].forEach((ref) => {
               if (ref.error) errorObj.issues.push(ref.error);
             });
-
 
             const attendanceErr = validateEnumField(
               row.attendance,
@@ -303,23 +301,13 @@ export const uploadUsers = async (req, res) => {
               doc[field] = row[field]?.toString().trim() === "1";
             }
 
-            // const duplicate = await Model.findOne(
-            //   //   {
-            //   //   $or: [
-            //   //     { mobile_no_1: doc.mobile_no_1 },
-            //   //     { email: doc.email },
-            //   //     // { name: doc.name },
-            //   //   ],
-            //   // }
-            //   {
-            //     $or: [
-            //       { mobile_no_1: doc.mobile_no_1 },
-            //       { email: doc.email },
-            //     ],
-            //   },
-            //   { $set: doc },
-            //   { upsert: true, new: true }
-            // );
+            // const duplicate = await Model.findOne({
+            //   $or: [
+            //     { mobile_no_1: doc.mobile_no_1 },
+            //     { email: doc.email },
+            //     { name: doc.name },
+            //   ],
+            // });
 
             // if (duplicate) {
             //   errors.push({
@@ -1357,6 +1345,7 @@ export const addOrUpdatePrantPracharakUser = async (req, res) => {
 
 //karyakari mandal
 // get all AbKMUsers
+
 export const getDashboardDataKaryakariMandal = async (req, res) => {
   try {
     const { year } = req.params;
@@ -1418,26 +1407,18 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
     // --- User Counts ---
     const a_b_adhikariTotal = abhaStar
       ? await AbkmUser.countDocuments({
-        year: parsedYear,
-        star_id: abhaStar._id,
-      })
+          year: parsedYear,
+          star_id: abhaStar._id,
+        })
       : 0;
 
     const kshetraPracharak =
       kshetraStar && kshetraPracharakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraPracharakDayitva._id,
-        })
-        : 0;
-    const SahakshetraPracharakTotal =
-      kshetraStar && SahakshetraPracharakDayitva
-        ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: SahakshetraPracharakDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraPracharakDayitva._id,
+          })
         : 0;
     const SahakshetraPracharakTotal =
       kshetraStar && SahakshetraPracharakDayitva
@@ -1448,35 +1429,23 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
 
-<<<<<<< HEAD
-    const kshetraPracharakTotal = kshetraPracharak + SahakshetraPracharakTotal
-=======
     const kshetraPracharakTotal = kshetraPracharak+SahakshetraPracharakTotal
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
     const kshetraPracharakPramukhTotal =
       kshetraStar && kshetraPracharakPramukhDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraPracharakPramukhDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraPracharakPramukhDayitva._id,
+          })
         : 0;
 
     const kshetrakaryavahTotal =
       kshetraStar && kshetraKaryavahDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraKaryavahDayitva._id,
-        })
-        : 0;
-    const SahakshetraKaryavahDayitvaTotal =
-      kshetraStar && SahakshetraKaryavahDayitva
-        ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: SahakshetraKaryavahDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraKaryavahDayitva._id,
+          })
         : 0;
     const SahakshetraKaryavahDayitvaTotal =
       kshetraStar && SahakshetraKaryavahDayitva
@@ -1487,26 +1456,14 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
 
-<<<<<<< HEAD
-    const kshetrakaryavah = kshetrakaryavahTotal + SahakshetraKaryavahDayitvaTotal
-=======
        const kshetrakaryavah =kshetrakaryavahTotal+SahakshetraKaryavahDayitvaTotal
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
     const kshtrasanchalka =
       kshetraStar && kshetraSanchalakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: kshetraSanchalakDayitva._id,
-        })
-        : 0;
-    const SahakshtrasanchalkaTotal =
-      kshetraStar && SahakshetraSanchalakDayitva
-        ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: kshetraStar._id,
-          dayitva_id: SahakshetraSanchalakDayitva._id,
-        })
+            year: parsedYear,
+            star_id: kshetraStar._id,
+            dayitva_id: kshetraSanchalakDayitva._id,
+          })
         : 0;
     const SahakshtrasanchalkaTotal =
       kshetraStar && SahakshetraSanchalakDayitva
@@ -1517,52 +1474,31 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
 
-<<<<<<< HEAD
-    const kshtrasanchalkaTotal = kshtrasanchalka + SahakshtrasanchalkaTotal
-=======
         const kshtrasanchalkaTotal=kshtrasanchalka +SahakshtrasanchalkaTotal
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
     const prantkaryavah =
       prantStar && prantKaryavahDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: prantKaryavahDayitva._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantKaryavahDayitva._id,
+          })
         : 0;
     const SahaprantKaryavahDayitva =
       prantStar && sahaprantKaryavahDayitva
         ? await AbkmUser.countDocuments({
-<<<<<<< HEAD
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: sahaprantKaryavahDayitva._id,
-        })
-        : 0;
-    const prantkaryavahTotal = prantkaryavah + SahaprantKaryavahDayitva
-=======
             year: parsedYear,
             star_id: prantStar._id,
             dayitva_id: sahaprantKaryavahDayitva._id,
           })
         : 0;
      const prantkaryavahTotal = prantkaryavah+SahaprantKaryavahDayitva
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
     const prantsanghachalak =
       prantStar && prantSanghachalakDayitva
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: prantSanghachalakDayitva._id,
-        })
-        : 0;
-    const Sahaprantsanghachalak =
-      prantStar && SahaprantSanghachalakDayitva
-        ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: SahaprantSanghachalakDayitva._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantSanghachalakDayitva._id,
+          })
         : 0;
     const Sahaprantsanghachalak =
       prantStar && SahaprantSanghachalakDayitva
@@ -1573,28 +1509,14 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
           })
         : 0;
 
-<<<<<<< HEAD
-    const prantsanghachalakTotal = prantsanghachalak + Sahaprantsanghachalak
-    const prantPracharakTotal =
-      prantStar && prantPracharakSaha && prantPracharakDayitva
-=======
           const prantsanghachalakTotal = prantsanghachalak+Sahaprantsanghachalak
     const prantPracharakTotal =
       prantStar  && prantPracharakSaha && prantPracharakDayitva
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: prantPracharakDayitva._id,
-        })
-        : 0;
-    const prantPracharaksahaTotal =
-      prantStar && prantPracharakSaha
-        ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: prantStar._id,
-          dayitva_id: prantPracharakSaha._id,
-        })
+            year: parsedYear,
+            star_id: prantStar._id,
+            dayitva_id: prantPracharakDayitva._id,
+          })
         : 0;
     const prantPracharaksahaTotal =
       prantStar  && prantPracharakSaha
@@ -1608,10 +1530,10 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
     const vividhKshetraTotal =
       vividhStar && vividhPrakar
         ? await AbkmUser.countDocuments({
-          year: parsedYear,
-          star_id: vividhStar._id,
-          prakar_id: vividhPrakar._id,
-        })
+            year: parsedYear,
+            star_id: vividhStar._id,
+            prakar_id: vividhPrakar._id,
+          })
         : 0;
 
     // --- Baithak Counts ---
@@ -1633,11 +1555,7 @@ export const getDashboardDataKaryakariMandal = async (req, res) => {
       ],
     });
 
-<<<<<<< HEAD
-    const prantPracharak_total = prantPracharakTotal + prantPracharaksahaTotal
-=======
     const prantPracharak_total = prantPracharakTotal +prantPracharaksahaTotal
->>>>>>> e61de732cc285d12a87e4d5c98d1b369b93b2c3b
     // --- Final Response ---
     return res.status(200).json({
       totalUsers,
